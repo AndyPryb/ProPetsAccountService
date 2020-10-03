@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditUserDto {
-    String name;
     String avatar;
+    String name;
     String phone;
 }

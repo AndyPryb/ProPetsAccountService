@@ -1,6 +1,5 @@
 package propets.accounting.dto;
 
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "userAccounts")
 public class RegisterUserDto {
     String name;
     String email;

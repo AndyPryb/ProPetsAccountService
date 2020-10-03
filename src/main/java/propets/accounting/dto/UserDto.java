@@ -12,11 +12,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-	
-	String email;
+    String email;
     String name;
     String avatar;
     String phone;
     Set<String> roles;
-    
+
 }
