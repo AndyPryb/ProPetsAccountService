@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import propets.acconting.service.AccountingService;
 import propets.accounting.dto.RegisterUserDto;
 import propets.accounting.dto.UserDto;
+import propets.accounting.service.AccountingService;
 
 @RestController
 public class AccountingServiceController {

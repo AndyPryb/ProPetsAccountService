@@ -1,4 +1,4 @@
-package propets.acconting.service;
+package propets.accounting.service;
 
 import org.springframework.stereotype.Component;
 
