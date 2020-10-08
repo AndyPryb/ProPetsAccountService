@@ -53,11 +53,10 @@ public class AuthenticationFilter implements Filter {
                         response.sendError(403);
                         return;
                     }
-                    login = userAccount.getEmail();
+                    login = credentials[0]; //userAccount.getEmail()
                     response.setHeader("X-Token", tokenService.createToken(userAccount));
                 } else {
                     if (token != null) {
-                        // Token X-Token handling
                         UserInfoDto userInfoDto = tokenService.validateToken(token);
                         login = userInfoDto.getEmail();
                         response.setHeader("X-Token", userInfoDto.getToken());
@@ -79,6 +78,11 @@ public class AuthenticationFilter implements Filter {
 
     private boolean checkEndpoint(String path, String method) {
         boolean res = path.endsWith("/login") && "POST".equalsIgnoreCase(method);
+        res = res || path.matches(".*/.+/info") && "GET".equalsIgnoreCase(method);
+        System.out.println("Path: "+path);
+        System.out.println("Method: "+method);
+        System.out.println(res);
+        System.out.println();
         return res;
     }
 

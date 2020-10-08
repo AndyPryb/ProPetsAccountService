@@ -41,7 +41,7 @@ public class TokenServiceJwt implements TokenService {
     public UserInfoDto validateToken(String token) {
         Jws<Claims> jws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
         Claims claims = jws.getBody();
-        Instant exp = Instant.ofEpochMilli(Long.parseLong((String)claims.get("exp")));
+        Instant exp = Instant.ofEpochMilli(Long.parseLong(claims.get("exp").toString()));
         if(exp.isBefore(Instant.now())) {
             throw new TokenExpiredException();
         }
