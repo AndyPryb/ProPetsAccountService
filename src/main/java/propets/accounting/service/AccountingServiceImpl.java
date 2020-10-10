@@ -3,10 +3,12 @@ package propets.accounting.service;
 import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import propets.accounting.dao.AccountingRepository;
 import propets.accounting.dto.EditUserDto;
@@ -19,17 +21,21 @@ import propets.accounting.model.UserAccount;
 
 @Service
 public class AccountingServiceImpl implements AccountingService {
+    
+    @Value("${header.token}") // SpEL spring expression language
+    String tokenName;
 
     @Autowired
     AccountingRepository repository;
     
     @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
     TokenService tokenService;
     
-    @Autowired
-    ModelMapper modelMapper;
-    
     @Override
+    @Transactional
     public ResponseEntity<UserDto> registerUser(RegisterUserDto registerUserDto) {
         if(repository.existsById(registerUserDto.getEmail())) {
             throw new UserExistsException(registerUserDto.getEmail());
@@ -39,7 +45,7 @@ public class AccountingServiceImpl implements AccountingService {
         repository.save(userAccount);
         UserDto userResponseDto = modelMapper.map(userAccount, UserDto.class);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Token", tokenService.createToken(userAccount));
+        headers.add(tokenName, tokenService.createToken(userAccount.getEmail()));
         return new ResponseEntity<UserDto>(userResponseDto, headers, HttpStatus.OK);
     }
 
@@ -50,15 +56,28 @@ public class AccountingServiceImpl implements AccountingService {
     }
 
     @Override
+    @Transactional
     public UserDto editUser(String login, EditUserDto editUserDto) {
-        // TODO Auto-generated method stub
-        return null;
+        UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+        if(editUserDto.getAvatar()!=null) {
+            userAccount.setAvatar(editUserDto.getAvatar());
+        }
+        if(editUserDto.getName()!=null) {
+            userAccount.setName(editUserDto.getName());
+        }
+        if(editUserDto.getPhone()!=null) {
+            userAccount.setPhone(editUserDto.getPhone());
+        }
+        repository.save(userAccount);
+        return modelMapper.map(userAccount, UserDto.class);
     }
 
     @Override
+    @Transactional
     public UserDto deleteUser(String login) {
-        // TODO Auto-generated method stub
-        return null;
+        UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+        repository.delete(userAccount);
+        return modelMapper.map(userAccount, UserDto.class);
     }
 
     @Override
@@ -71,7 +90,7 @@ public class AccountingServiceImpl implements AccountingService {
     public ResponseEntity<UserInfoDto> tokenValidation(String token) {
         UserInfoDto userRoleDto = tokenService.validateToken(token);
         HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Token", userRoleDto.getToken());
+        headers.add(tokenName, userRoleDto.getToken());
         return new ResponseEntity<UserInfoDto>(userRoleDto, headers, HttpStatus.OK);
     }
 

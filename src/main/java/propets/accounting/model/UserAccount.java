@@ -8,10 +8,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Singular;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(of = { "email" })
 @Document(collection = "users")
+@Builder
 public class UserAccount implements Serializable{
     /**
      * 
@@ -30,6 +33,7 @@ public class UserAccount implements Serializable{
     String email;
     String phone;
     String avatar;
+    @Singular
     Set<String> roles = new HashSet<>();
     boolean isBlocked;
     public UserAccount(String name, String email) {

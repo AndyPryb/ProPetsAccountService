@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import propets.accounting.dto.EditUserDto;
 import propets.accounting.dto.RegisterUserDto;
 import propets.accounting.dto.UserDto;
+import propets.accounting.dto.UserInfoDto;
 import propets.accounting.service.AccountingService;
 
 @RestController
@@ -44,17 +45,17 @@ public class AccountingController {
     
     @PutMapping("/{login}")
     public UserDto editUser(@PathVariable String login, @RequestBody EditUserDto editUserDto) {
-        return null;
+        return service.editUser(login, editUserDto);
     }
     
     @DeleteMapping("/{login}")
     public UserDto deleteUser(@PathVariable String login) {
-        return null;
+        return service.deleteUser(login);
     }
     
     @PutMapping("/{userLogin}/role/{role}")
     public Set<String> addUserRole(@PathVariable String userLogin, @PathVariable String role) {
-        return null;
+        return addUserRole(userLogin, role);
     }
     
     @DeleteMapping("/{login}/role/{role}")
@@ -72,10 +73,11 @@ public class AccountingController {
         return;
     }
     
-    public ResponseEntity<UserDto> tokenValidation(@RequestHeader("X-Token") String token) {
-        return null;
-    }
+//    @GetMapping("/token")
+//    public ResponseEntity<UserInfoDto> tokenValidation(@RequestHeader("X-Token") String token) {
+//        return service.tokenValidation(token);
+//    }
     
-    // TODO ...
+//      TODO ...
     
 }
