@@ -59,7 +59,6 @@ public class TokenServiceJwt implements TokenService {
                 .claim("iat", Instant.now().toEpochMilli())
                 .claim("exp", Instant.now().plus(30, UNIT).toEpochMilli())
                 .claim("sub", login)
-//                .claim("isBlocked", userAccount.isBlocked())
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
