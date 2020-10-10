@@ -61,6 +61,7 @@ public class TokenServiceJwt implements TokenService {
                 .claim("sub", login)
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+        // privet
     }
 
 }
