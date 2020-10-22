@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import propets.accounting.dto.EditUserDto;
 import propets.accounting.dto.RegisterUserDto;
 import propets.accounting.dto.UserDto;
+import propets.accounting.dto.UserInfoDto;
 import propets.accounting.service.AccountingService;
 
 @RestController
@@ -71,10 +73,10 @@ public class AccountingController {
         return;
     }
     
-//    @GetMapping("/token")
-//    public ResponseEntity<UserInfoDto> tokenValidation(@RequestHeader("X-Token") String token) {
-//        return service.tokenValidation(token);
-//    }
+    @GetMapping("/token")
+    public ResponseEntity<UserInfoDto> tokenValidation(@RequestHeader("X-Token") String token) {
+        return service.tokenValidation(token);
+    }
     
 //      TODO ...
     

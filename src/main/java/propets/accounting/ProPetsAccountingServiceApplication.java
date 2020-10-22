@@ -23,7 +23,6 @@ public class ProPetsAccountingServiceApplication implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if(!repository.existsById("admin")) {
             String hashPassword = BCrypt.hashpw("admin", BCrypt.gensalt());
-//            UserAccount admin = new UserAccount("Administrator", "admin");
             UserAccount admin = UserAccount.builder()
                     .email("admin")
                     .password(hashPassword)

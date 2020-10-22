@@ -9,7 +9,7 @@ import propets.accounting.model.UserAccount;
 public interface TokenService {
     String createToken(UserAccount userAccount);
     
-    String createToken(String login);
+//    String createToken(String login);
     
     UserInfoDto validateToken(String token);
     

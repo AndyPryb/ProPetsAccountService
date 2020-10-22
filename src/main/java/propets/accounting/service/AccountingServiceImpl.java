@@ -45,7 +45,7 @@ public class AccountingServiceImpl implements AccountingService {
         repository.save(userAccount);
         UserDto userResponseDto = modelMapper.map(userAccount, UserDto.class);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(tokenName, tokenService.createToken(userAccount.getEmail()));
+        headers.add(tokenName, tokenService.createToken(userAccount));
         return new ResponseEntity<UserDto>(userResponseDto, headers, HttpStatus.OK);
     }
 

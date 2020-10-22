@@ -32,7 +32,14 @@ public class TokenServiceJwt implements TokenService {
     
     @Override
     public String createToken(UserAccount userAccount) {
-        return createToken(userAccount.getEmail());
+        return Jwts.builder()
+                .claim("iat", Instant.now().toEpochMilli())
+                .claim("exp", Instant.now().plus(30, UNIT).toEpochMilli())
+                .claim("sub", userAccount.getEmail())
+                .claim("userName", userAccount.getName())
+                .claim("avatar", userAccount.getAvatar())
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
     @Override
@@ -45,7 +52,8 @@ public class TokenServiceJwt implements TokenService {
         }
         claims.put("exp", Instant.now().plus(30, UNIT).toEpochMilli());
         token = Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS256, secretKey).compact();
-        return new UserInfoDto((String)claims.get("sub"), token);
+        return new UserInfoDto((String)claims.get("sub"), (String)claims.get("userName"), (String)claims.get("avatar"), token);
+        //return new UserInfoDto((String)claims.get("sub"), (String)claims.get("userName"), (String)claims.get("avatar"), token);
     }
     
     @Bean
@@ -53,15 +61,14 @@ public class TokenServiceJwt implements TokenService {
         return new SecretKeySpec(Base64.getUrlEncoder().encode(secret.getBytes()), "AES");
     }
 
-    @Override
-    public String createToken(String login) {
-        return Jwts.builder()
-                .claim("iat", Instant.now().toEpochMilli())
-                .claim("exp", Instant.now().plus(30, UNIT).toEpochMilli())
-                .claim("sub", login)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact();
-        // privet
-    }
+//    @Override
+//    public String createToken(String login) {
+//        return Jwts.builder()
+//                .claim("iat", Instant.now().toEpochMilli())
+//                .claim("exp", Instant.now().plus(30, UNIT).toEpochMilli())
+//                .claim("sub", login)
+//                .signWith(SignatureAlgorithm.HS256, secretKey)
+//                .compact();
+//    }
 
 }
