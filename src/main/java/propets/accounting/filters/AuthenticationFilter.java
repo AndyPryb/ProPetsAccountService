@@ -2,7 +2,6 @@ package propets.accounting.filters;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Base64;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -47,11 +46,11 @@ public class AuthenticationFilter implements Filter {
         UserAccount userAccount = null;
         if(checkEndpoint(request.getServletPath(), request.getMethod())) {
             try {
-                token = request.getHeader("X-Token");
+                token = request.getHeader("X-Token"); // JWT
                 basicToken = request.getHeader("Authorization");
                 if(basicToken!=null) {
                     // basic auth
-                    String[] credentials = getCredentialsFromBase64(basicToken);
+                    String[] credentials = tokenService.getCredentialsFromBase64(basicToken);
                     login = credentials[0]; //userAccount.getEmail()
                     userAccount = repository.findById(login).orElse(null);
                     if(userAccount==null) {
@@ -102,7 +101,7 @@ public class AuthenticationFilter implements Filter {
 //        System.out.println(res);
 //        System.out.println();
 //        return res;
-        boolean res = path.matches(PREFIX+"/registration/?") && "POST".equalsIgnoreCase(method);
+        boolean res = path.matches(PREFIX+"/registration/?") && "POST".equalsIgnoreCase(method); // register endpoint
         return !res;
     }
 
@@ -124,12 +123,6 @@ public class AuthenticationFilter implements Filter {
                 }
             };
         }
-    }
-    
-    private String[] getCredentialsFromBase64(String token) {
-        token = token.split(" ")[1];
-        String[] credentials = new String(Base64.getDecoder().decode(token)).split(":");
-        return credentials;
     }
 
     
