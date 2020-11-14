@@ -89,10 +89,10 @@ public class AccountingServiceImpl implements AccountingService {
 
     @Override
     public ResponseEntity<UserInfoDto> tokenValidation(String token) {
-        UserInfoDto userInfoDtoV = tokenService.validateToken(token);
+        UserInfoDto userInfoDto = tokenService.validateToken(token);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(tokenName, userInfoDtoV.getToken());
-        return new ResponseEntity<UserInfoDto>(userInfoDtoV, headers, HttpStatus.OK);
+        headers.add(tokenName, userInfoDto.getToken());
+        return new ResponseEntity<UserInfoDto>(userInfoDto, headers, HttpStatus.OK);
     }
 
 }
