@@ -2,6 +2,7 @@ package propets.accounting.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
@@ -11,12 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Singular;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = { "email" })
@@ -36,6 +35,12 @@ public class UserAccount implements Serializable{
     @Singular
     Set<String> roles = new HashSet<>();
     boolean isBlocked;
+    List<String> favorites;
+    List<String> activities;
+    
+    public UserAccount() {
+    }
+    
     public UserAccount(String name, String email) {
         this.name = name;
         this.email = email;
@@ -43,5 +48,14 @@ public class UserAccount implements Serializable{
         isBlocked=false;
     }
     
+    public Set<String> addUserRole(String role) {
+    	roles.add(role);
+    	return roles;
+    }
+    
+    public Set<String> removeUserRole(String role) {
+    	roles.remove(role);
+    	return roles;
+    }
     
 }
