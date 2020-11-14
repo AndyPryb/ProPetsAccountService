@@ -53,6 +53,7 @@ public class AccountingServiceImpl implements AccountingService {
     }
 
     @Override
+    @Transactional
     public UserDto getUser(String login) {
         UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
         return modelMapper.map(userAccount, UserDto.class);
