@@ -2,7 +2,6 @@ package propets.accounting.filters;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Base64;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -47,11 +46,11 @@ public class AuthenticationFilter implements Filter {
         UserAccount userAccount = null;
         if(checkEndpoint(request.getServletPath(), request.getMethod())) {
             try {
-                token = request.getHeader("X-Token");
+                token = request.getHeader("X-Token"); // JWT
                 basicToken = request.getHeader("Authorization");
                 if(basicToken!=null) {
                     // basic auth
-                    String[] credentials = getCredentialsFromBase64(basicToken);
+                    String[] credentials = tokenService.getCredentialsFromBase64(basicToken);
                     login = credentials[0]; //userAccount.getEmail()
                     userAccount = repository.findById(login).orElse(null);
                     if(userAccount==null) {
@@ -62,20 +61,10 @@ public class AuthenticationFilter implements Filter {
                         response.sendError(403, "wrong password!");
                         return;
                     }
-                    
-//                    RequestEntity<String> requestEntity = new RequestEntity<String>(login, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
-//                    ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
-                    token = tokenService.createToken(login);
-//                    System.out.println("AUTHFILTERTOKEN: "+token);
+                    token = tokenService.createToken(userAccount);
                     response.setHeader("X-Token", token);
                 } else {
                     if (token != null) {
-//                        HttpHeaders headers = new HttpHeaders();
-//                        headers.add("X-Token", token);
-//                        RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("http://localhost:9000/token"));
-//                        ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
-//                        UserInfoDto userInfoDto = responseEntity.getBody();
-                      //UserInfoDto userInfoDto = tokenService.validateToken(token);
                         UserInfoDto userInfoDto = tokenService.validateToken(token);
                         login = userInfoDto.getEmail();
                         response.setHeader("X-Token", userInfoDto.getToken());
@@ -85,7 +74,6 @@ public class AuthenticationFilter implements Filter {
                     }
                 }
                 request = new WrapperRequest(request, login);
-//                response.setHeader("X-Token", token);
             } catch (HttpClientErrorException e) {
                 response.sendError(403, "X-Token expired");
                 return;
@@ -99,36 +87,22 @@ public class AuthenticationFilter implements Filter {
                 return;
             }
         }
-//        if(checkAdminRights(request.getServletPath(), request.getMethod())) {
-//            if(!userAccount.getRoles().contains("ADMIN")) {
-//                response.sendError(403);
-//                return;
-//            }
-//        }
-        
         chain.doFilter(request, response);
     }
 
-//    private boolean checkAdminRights(String path, String method) {
-//        boolean res = path.matches(".*/.+/role/.+") && "PUT".equalsIgnoreCase(method);
-//        System.out.println("adminPath: "+path);
-//        System.out.println("adminMethod: "+method);
-//        System.out.println("admin: "+res);
+    private boolean checkEndpoint(String path, String method) {
+//        boolean res = path.endsWith(PREFIX+"/login") && "POST".equalsIgnoreCase(method);
+//        res = res || path.matches(PREFIX+"/.+/info") && "GET".equalsIgnoreCase(method);
+//        res = res || path.matches(PREFIX+"/.+") && "PUT".equalsIgnoreCase(method);
+//        res = res || path.matches(PREFIX+"/.+") && "DELETE".equalsIgnoreCase(method);
+//        res = res || path.matches(PREFIX+"/.+/role/.+") && "PUT".equalsIgnoreCase(method);
+//        System.out.println("Path: "+path);
+//        System.out.println("Method: "+method);
+//        System.out.println(res);
 //        System.out.println();
 //        return res;
-//    }
-
-    private boolean checkEndpoint(String path, String method) {
-        boolean res = path.endsWith(PREFIX+"/login") && "POST".equalsIgnoreCase(method);
-        res = res || path.matches(PREFIX+"/.+/info") && "GET".equalsIgnoreCase(method);
-        res = res || path.matches(PREFIX+"/.+") && "PUT".equalsIgnoreCase(method);
-        res = res || path.matches(PREFIX+"/.+") && "DELETE".equalsIgnoreCase(method);
-        res = res || path.matches(PREFIX+"/.+/role/.+") && "PUT".equalsIgnoreCase(method);
-        System.out.println("Path: "+path);
-        System.out.println("Method: "+method);
-        System.out.println(res);
-        System.out.println();
-        return res;
+        boolean res = path.matches(PREFIX+"/registration/?") && "POST".equalsIgnoreCase(method); // register endpoint
+        return !res;
     }
 
     private class WrapperRequest extends HttpServletRequestWrapper {
@@ -149,12 +123,6 @@ public class AuthenticationFilter implements Filter {
                 }
             };
         }
-    }
-    
-    private String[] getCredentialsFromBase64(String token) {
-        token = token.split(" ")[1];
-        String[] credentials = new String(Base64.getDecoder().decode(token)).split(":");
-        return credentials;
     }
 
     

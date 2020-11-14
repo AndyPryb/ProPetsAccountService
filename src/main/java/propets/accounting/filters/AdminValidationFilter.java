@@ -47,7 +47,7 @@ public class AdminValidationFilter implements Filter {
         
     }
 
-    private boolean checkEndpoint(String path, String method) { // remove user, add/delete user role, block user account, 
+    private boolean checkEndpoint(String path, String method) { // add/delete user role, block user account
         boolean res = path.matches(PREFIX+"/.+/?") && "DELETE".equalsIgnoreCase(method);
         return res;
     }

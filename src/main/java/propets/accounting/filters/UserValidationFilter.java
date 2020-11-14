@@ -41,18 +41,12 @@ public class UserValidationFilter implements Filter {
         if(checkEndpoint(request.getServletPath(), request.getMethod())) { // X-Token should be ready at this moment (from previous filter)
             try {
                 token = request.getHeader("X-Token");
-//                System.out.println("USERVALIDATIONTOKEN: "+token);
-//                HttpHeaders headers = new HttpHeaders();
-//                headers.add("X-Token", token);
-                // we send request with X-Token to the validation service
-//                RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("http://localhost:9000/token"));
-//                ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
                 UserInfoDto userInfoDto = tokenService.validateToken(token);
                 
                 System.out.println("Userinfodto email: "+userInfoDto.getEmail());
                 System.out.println(request.getServletPath().matches(".*/"+userInfoDto.getEmail()+"/?")); 
                 
-                if(!request.getServletPath().matches(".*/"+userInfoDto.getEmail()+"/?")) { // user validation
+                if(!request.getUserPrincipal().getName().equalsIgnoreCase(userInfoDto.getEmail())) {
                     response.sendError(401, "User validation failed! Email "+userInfoDto.getEmail()+" does not match!");
                     return;
                 }
