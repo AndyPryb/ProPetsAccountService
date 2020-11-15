@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import propets.accounting.dto.UserDto;
 import propets.accounting.dto.UserInfoDto;
 import propets.accounting.model.UserAccount;
 
@@ -34,11 +33,23 @@ public class ValidationService {
     
     public String createToken(UserAccount userAccount) {
         try {
-            UserDto userDto = modelMapper.map(userAccount, UserDto.class);
-            System.out.println(userDto.toString());
-            RequestEntity<UserDto> requestEntity = new RequestEntity<UserDto>(userDto, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
-            ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
-            return responseEntity.getBody();
+            
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("X-login", userAccount.getEmail());
+//            String login = userAccount.getEmail();
+//            RequestEntity<String> requestEntity = new RequestEntity<String>(login, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
+            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
+            ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
+            System.out.println(responseEntity.getBody().getEmail());
+            return responseEntity.getHeaders().get("X-Token").get(0);
+            
+            
+            
+//            UserDto userDto = modelMapper.map(userAccount, UserDto.class);
+//            System.out.println(userDto.toString());
+//            RequestEntity<UserDto> requestEntity = new RequestEntity<UserDto>(userDto, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
+//            ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
+//            return responseEntity.getBody();
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

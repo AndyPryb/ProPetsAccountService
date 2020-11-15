@@ -14,12 +14,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Singular;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = { "email" })
 @Document(collection = "users")
+@ToString
 @Builder
 public class UserAccount implements Serializable{
     /**
