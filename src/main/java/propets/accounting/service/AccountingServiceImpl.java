@@ -32,7 +32,7 @@ public class AccountingServiceImpl implements AccountingService {
     ModelMapper modelMapper;
 
     @Autowired
-    TokenService tokenService;
+    ValidationService validationService;
     
     @Override
     @Transactional
@@ -45,7 +45,7 @@ public class AccountingServiceImpl implements AccountingService {
         repository.save(userAccount);
         UserDto userResponseDto = modelMapper.map(userAccount, UserDto.class);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(tokenName, tokenService.createToken(userAccount));
+        headers.add(tokenName, validationService.createToken(userAccount));
         return new ResponseEntity<UserDto>(userResponseDto, headers, HttpStatus.OK);
     }
 
@@ -89,7 +89,7 @@ public class AccountingServiceImpl implements AccountingService {
 
     @Override
     public ResponseEntity<UserInfoDto> tokenValidation(String token) {
-        UserInfoDto userInfoDto = tokenService.validateToken(token);
+        UserInfoDto userInfoDto = validationService.validateToken(token);
         HttpHeaders headers = new HttpHeaders();
         headers.add(tokenName, userInfoDto.getToken());
         return new ResponseEntity<UserInfoDto>(userInfoDto, headers, HttpStatus.OK);

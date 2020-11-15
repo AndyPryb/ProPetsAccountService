@@ -41,6 +41,8 @@ public class UserAccount implements Serializable{
         this.email = email;
         roles.add("USER");
         isBlocked=false;
+        avatar = "";
+        phone = "";
     }
     
     

@@ -17,7 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import propets.accounting.dto.UserInfoDto;
-import propets.accounting.service.TokenService;
+import propets.accounting.service.ValidationService;
 
 @Service
 @Order(value = 20)
@@ -27,7 +27,7 @@ public class UserValidationFilter implements Filter {
     RestTemplate restTemplate;
     
     @Autowired
-    TokenService tokenService;
+    ValidationService validationService;
 
     final String PREFIX = "/account/en/v1";
 
@@ -41,7 +41,7 @@ public class UserValidationFilter implements Filter {
         if(checkEndpoint(request.getServletPath(), request.getMethod())) { // X-Token should be ready at this moment (from previous filter)
             try {
                 token = request.getHeader("X-Token");
-                UserInfoDto userInfoDto = tokenService.validateToken(token);
+                UserInfoDto userInfoDto = validationService.validateToken(token);
                 
                 System.out.println("Userinfodto email: "+userInfoDto.getEmail());
                 System.out.println(request.getServletPath().matches(".*/"+userInfoDto.getEmail()+"/?")); 

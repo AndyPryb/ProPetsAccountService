@@ -22,7 +22,7 @@ import propets.accounting.dao.AccountingRepository;
 import propets.accounting.dto.UserInfoDto;
 import propets.accounting.dto.exceptions.UserNotFoundException;
 import propets.accounting.model.UserAccount;
-import propets.accounting.service.TokenService;
+import propets.accounting.service.ValidationService;
 
 @Service
 @Order(10)
@@ -32,7 +32,7 @@ public class AuthenticationFilter implements Filter {
     AccountingRepository repository;
     
     @Autowired
-    TokenService tokenService;
+    ValidationService validationService;
     
     final String PREFIX = "/account/en/v1";
 
@@ -50,7 +50,7 @@ public class AuthenticationFilter implements Filter {
                 basicToken = request.getHeader("Authorization");
                 if(basicToken!=null) {
                     // basic auth
-                    String[] credentials = tokenService.getCredentialsFromBase64(basicToken);
+                    String[] credentials = validationService.getCredentialsFromBase64(basicToken);
                     login = credentials[0]; //userAccount.getEmail()
                     userAccount = repository.findById(login).orElse(null);
                     if(userAccount==null) {
@@ -61,11 +61,11 @@ public class AuthenticationFilter implements Filter {
                         response.sendError(403, "wrong password!");
                         return;
                     }
-                    token = tokenService.createToken(userAccount);
+                    token = validationService.createToken(userAccount);
                     response.setHeader("X-Token", token);
                 } else {
                     if (token != null) {
-                        UserInfoDto userInfoDto = tokenService.validateToken(token);
+                        UserInfoDto userInfoDto = validationService.validateToken(token);
                         login = userInfoDto.getEmail();
                         response.setHeader("X-Token", userInfoDto.getToken());
                     } else {
@@ -75,6 +75,7 @@ public class AuthenticationFilter implements Filter {
                 }
                 request = new WrapperRequest(request, login);
             } catch (HttpClientErrorException e) {
+                e.printStackTrace();
                 response.sendError(403, "X-Token expired");
                 return;
             } catch (UserNotFoundException e) {
