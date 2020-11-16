@@ -110,7 +110,7 @@ public class AccountingServiceImpl implements AccountingService {
 	@Override
 	public Set<String> addUserRole(String login, String role) {
 		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		if (role.toUpperCase() == "MODERATOR" || role.toUpperCase() == "ADMINISTRATOR") {
+		if (role.equalsIgnoreCase("MODER") || role.equalsIgnoreCase("ADMIN")) {
 			userAccount.addUserRole(role);
 			repository.save(userAccount);
 			return userAccount.getRoles();
@@ -122,7 +122,7 @@ public class AccountingServiceImpl implements AccountingService {
 	@Override
 	public Set<String> removeUserRole(String login, String role) {
 		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		if (role.toUpperCase() == "MODERATOR" || role.toUpperCase() == "ADMINISTRATOR") {
+		if (role.equalsIgnoreCase("MODER") || role.equalsIgnoreCase("ADMIN")) {
 			userAccount.removeUserRole(role);
 			repository.save(userAccount);
 			return userAccount.getRoles();
