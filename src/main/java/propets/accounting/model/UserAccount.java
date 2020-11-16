@@ -37,8 +37,16 @@ public class UserAccount implements Serializable{
     @Singular
     Set<String> roles = new HashSet<>();
     boolean isBlocked;
-    List<String> favorites;
-    List<String> activities;
+    
+    List<String> activities; // lostAndFound
+    List<String> favorites; // messages
+    
+//    List<String> activityMessages;
+//    List<String> activityLostAndFound;
+//    
+//    List<String> favoriteMessages;
+//    List<String> favoriteLostAndFound;
+    
     
     public UserAccount() {
     }

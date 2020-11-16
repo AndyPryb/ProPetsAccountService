@@ -1,6 +1,6 @@
 package propets.accounting.service;
 
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 
@@ -20,13 +20,11 @@ public interface AccountingService {
 	
 	UserDto deleteUser(String login);
 	
-	UserDto changeUserRole(String login, boolean add, String role);
+	Set<String> addUserRole(String login, String role);
+	
+	Set<String> removeUserRole(String login, String role);
 	
 	boolean blockUserAccount(String login, boolean status);
-	
-	List<String> addUserRole(String login, String role);
-	
-	List<String> removeUserRole(String login, String role);
 	
 	void addUserFavorite(String login, String postId);
 	

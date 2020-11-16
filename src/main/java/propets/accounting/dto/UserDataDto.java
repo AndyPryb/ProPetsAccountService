@@ -15,4 +15,5 @@ public class UserDataDto {
 	
 	List<String> messages;
 	List<String> lostFound;
+	
 }

@@ -1,6 +1,6 @@
 package propets.accounting.service;
 
-import java.util.List;
+import java.util.Set;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
@@ -18,6 +18,7 @@ import propets.accounting.dto.RegisterUserDto;
 import propets.accounting.dto.UserDataDto;
 import propets.accounting.dto.UserDto;
 import propets.accounting.dto.UserInfoDto;
+import propets.accounting.dto.exceptions.InvalidRoleException;
 import propets.accounting.dto.exceptions.UserExistsException;
 import propets.accounting.dto.exceptions.UserNotFoundException;
 import propets.accounting.model.UserAccount;
@@ -85,12 +86,6 @@ public class AccountingServiceImpl implements AccountingService {
     }
 
     @Override
-    public UserDto changeUserRole(String login, boolean add, String role) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public ResponseEntity<UserInfoDto> tokenValidation(String token) {
         UserInfoDto userInfoDto = validationService.validateToken(token);
         HttpHeaders headers = new HttpHeaders();
@@ -100,50 +95,82 @@ public class AccountingServiceImpl implements AccountingService {
 
 	@Override
 	public boolean blockUserAccount(String login, boolean status) {
-		// TODO Auto-generated method stub
-		return false;
+		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+		if(status) {
+			userAccount.setBlocked(true);
+			repository.save(userAccount);
+			return true;
+		} else {
+			userAccount.setBlocked(false);
+			repository.save(userAccount);
+			return false;
+		}
 	}
 
 	@Override
-	public List<String> addUserRole(String login, String role) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<String> addUserRole(String login, String role) {
+		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+		if (role.toUpperCase() == "MODERATOR" || role.toUpperCase() == "ADMINISTRATOR") {
+			userAccount.addUserRole(role);
+			repository.save(userAccount);
+			return userAccount.getRoles();
+		} else {
+			throw new InvalidRoleException(role);
+		}
 	}
 
 	@Override
-	public List<String> removeUserRole(String login, String role) {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<String> removeUserRole(String login, String role) {
+		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+		if (role.toUpperCase() == "MODERATOR" || role.toUpperCase() == "ADMINISTRATOR") {
+			userAccount.removeUserRole(role);
+			repository.save(userAccount);
+			return userAccount.getRoles();
+		} else {
+			throw new InvalidRoleException(role);
+		}
 	}
 
 	@Override
 	public void addUserFavorite(String login, String postId) {
-		// TODO Auto-generated method stub
-		
+		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+		userAccount.getFavorites().add(postId);
+		repository.save(userAccount);
 	}
 
 	@Override
 	public void addUserActivity(String login, String postId) {
-		// TODO Auto-generated method stub
-		
+		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+		userAccount.getActivities().add(postId);
+		repository.save(userAccount);
 	}
 
 	@Override
 	public void removeUserFavorite(String login, String postId) {
-		// TODO Auto-generated method stub
-		
+		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+		userAccount.getFavorites().remove(postId);
+		repository.save(userAccount);
 	}
 
 	@Override
 	public void removeUserActivity(String login, String postId) {
-		// TODO Auto-generated method stub
-		
+			UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+			userAccount.getActivities().remove(postId);
+			repository.save(userAccount);
 	}
 
 	@Override
 	public UserDataDto getUserData(String login, boolean dataType) {
-		// TODO Auto-generated method stub
-		return null;
+        UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
+        if (dataType) {
+        	return new UserDataDto(null, userAccount.getActivities());
+        } else {
+        	return new UserDataDto(userAccount.getFavorites(), null);
+        }
+//        if (dataType) {
+//        	return new UserDataDto(userAccount.getActivityMessages(), userAccount.getActivityLostAndFound());
+//        } else {
+//        	return new UserDataDto(userAccount.getFavoriteMessages(), userAccount.getFavoriteLostAndFound()); 
+//        }
 	}
-
 }

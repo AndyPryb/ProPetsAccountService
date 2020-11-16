@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import propets.accounting.dto.EditUserDto;
@@ -59,25 +60,47 @@ public class AccountingController {
     }
     
     @DeleteMapping("/{login}/role/{role}")
-    public Set<String> deleteUserRole(@PathVariable String login, @PathVariable String role) {
-        return null;
+    public Set<String> deleteUserRole(@PathVariable String userLogin, @PathVariable String role) {
+    	return deleteUserRole(userLogin, role);
     }
     
     @PutMapping("/{userLogin}/block/{status}")
-    public boolean blockUserAccount(@PathVariable String userLogin, @PathVariable String status) {
-        return false;
+    public boolean blockUserAccount(@PathVariable String userLogin, @PathVariable boolean status) {
+        return service.blockUserAccount(userLogin, status);
     }
     
     @PutMapping("/{login}/favorite/{id}")
-    public void addUserActivity(@PathVariable String login, @PathVariable String id) {
+    public void addUserFavorite(@PathVariable String login, @PathVariable String id) {
+        service.addUserFavorite(login, id);
         return;
+    }
+    
+    @PutMapping("/{login}/activity/{id}")
+    public void addUserActivity(@PathVariable String login, @PathVariable String id) {
+        service.addUserActivity(login, id);
+    	return;
+    }
+    
+    @DeleteMapping("/{login}/favorite/{id}")
+    public void removeUserFavorite(@PathVariable String login, @PathVariable String id) {
+        service.removeUserFavorite(login, id);
+        return;
+    }
+    
+    @DeleteMapping("/{login}/activity/{id}")
+    public void removeUserActivity(@PathVariable String login, @PathVariable String id) {
+    	service.removeUserActivity(login, id);
+    	return;
+    }
+    
+    @GetMapping("/{login}")
+    public void getUserData(@PathVariable String login, @RequestParam boolean dataType) {
+    	service.getUserData(login, dataType);
     }
     
     @GetMapping("/token")
     public ResponseEntity<UserInfoDto> tokenValidation(@RequestHeader("X-Token") String token) {
         return service.tokenValidation(token);
     }
-    
-//      TODO ...
     
 }
