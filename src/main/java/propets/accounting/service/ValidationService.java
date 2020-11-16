@@ -38,7 +38,7 @@ public class ValidationService {
             headers.add("X-login", userAccount.getEmail());
 //            String login = userAccount.getEmail();
 //            RequestEntity<String> requestEntity = new RequestEntity<String>(login, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
-            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
+            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
             System.out.println(responseEntity.getBody().getEmail());
             return responseEntity.getHeaders().get("X-Token").get(0);
@@ -62,7 +62,7 @@ public class ValidationService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Token", token);
-            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("http://localhost:9000/token"));
+            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/token"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
             UserInfoDto userInfoDto = responseEntity.getBody();
             return userInfoDto;
