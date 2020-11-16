@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import propets.accounting.dto.EditUserDto;
 import propets.accounting.dto.RegisterUserDto;
+import propets.accounting.dto.UserDataDto;
 import propets.accounting.dto.UserDto;
 import propets.accounting.dto.UserInfoDto;
 
@@ -35,7 +36,7 @@ public interface AccountingService {
 	
 	void removeUserActivity(String login, String postId);
 	
-//	UserDataDto getUserData(String login, boolean dataType);
+	UserDataDto getUserData(String login, boolean dataType);
 	
 	ResponseEntity<UserInfoDto> tokenValidation(String token);
 	

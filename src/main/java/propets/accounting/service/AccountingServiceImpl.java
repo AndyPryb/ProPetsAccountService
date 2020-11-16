@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import propets.accounting.dao.AccountingRepository;
 import propets.accounting.dto.EditUserDto;
 import propets.accounting.dto.RegisterUserDto;
+import propets.accounting.dto.UserDataDto;
 import propets.accounting.dto.UserDto;
 import propets.accounting.dto.UserInfoDto;
 import propets.accounting.dto.exceptions.UserExistsException;
@@ -139,10 +140,10 @@ public class AccountingServiceImpl implements AccountingService {
 		
 	}
 
-//	@Override
-//	public UserDataDto getUserData(String login, boolean dataType) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public UserDataDto getUserData(String login, boolean dataType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
