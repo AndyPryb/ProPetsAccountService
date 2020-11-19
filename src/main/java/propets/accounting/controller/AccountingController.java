@@ -57,12 +57,12 @@ public class AccountingController {
     
     @PutMapping("/{userLogin}/role/{role}")
     public Set<String> addUserRole(@PathVariable String userLogin, @PathVariable String role) {
-        return addUserRole(userLogin, role);
+        return service.addUserRole(userLogin, role);
     }
     
     @DeleteMapping("/{login}/role/{role}")
     public Set<String> deleteUserRole(@PathVariable String userLogin, @PathVariable String role) {
-    	return deleteUserRole(userLogin, role);
+    	return service.removeUserRole(userLogin, role);
     }
     
     @PutMapping("/{userLogin}/block/{status}")
