@@ -93,7 +93,6 @@ public class AccountingServiceImpl implements AccountingService {
         return new ResponseEntity<UserInfoDto>(userInfoDto, headers, HttpStatus.OK);
     }
 
-<<<<<<< HEAD
     @Override
     public boolean blockUserAccount(String login, boolean status) {
         UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
@@ -162,76 +161,6 @@ public class AccountingServiceImpl implements AccountingService {
 
     @Override
     public UserDataDto getUserData(String login, boolean dataType) {
-=======
-	@Override
-	public boolean blockUserAccount(String login, boolean status) {
-		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		if(status) {
-			userAccount.setBlocked(true);
-			repository.save(userAccount);
-			return true;
-		} else {
-			userAccount.setBlocked(false);
-			repository.save(userAccount);
-			return false;
-		}
-	}
-
-	@Override
-	public Set<String> addUserRole(String login, String role) {
-		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		if (role.equalsIgnoreCase("MODER") || role.equalsIgnoreCase("ADMIN")) {
-			userAccount.addUserRole(role);
-			repository.save(userAccount);
-			return userAccount.getRoles();
-		} else {
-			throw new InvalidRoleException(role);
-		}
-	}
-
-	@Override
-	public Set<String> removeUserRole(String login, String role) {
-		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		if (role.equalsIgnoreCase("MODER") || role.equalsIgnoreCase("ADMIN")) {
-			userAccount.removeUserRole(role);
-			repository.save(userAccount);
-			return userAccount.getRoles();
-		} else {
-			throw new InvalidRoleException(role);
-		}
-	}
-
-	@Override
-	public void addUserFavorite(String login, String postId) {
-		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		userAccount.getFavorites().add(postId);
-		repository.save(userAccount);
-	}
-
-	@Override
-	public void addUserActivity(String login, String postId) {
-		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		userAccount.getActivities().add(postId);
-		repository.save(userAccount);
-	}
-
-	@Override
-	public void removeUserFavorite(String login, String postId) {
-		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-		userAccount.getFavorites().remove(postId);
-		repository.save(userAccount);
-	}
-
-	@Override
-	public void removeUserActivity(String login, String postId) {
-			UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
-			userAccount.getActivities().remove(postId);
-			repository.save(userAccount);
-	}
-
-	@Override
-	public UserDataDto getUserData(String login, boolean dataType) {
->>>>>>> c9ffdd33beb17dcaaf7a4419c870cf27337f2758
         UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
         if (dataType) {
             return new UserDataDto(null, userAccount.getActivities());
