@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import propets.accounting.dao.AccountingRepository;
 import propets.accounting.dto.UserInfoDto;
@@ -43,7 +44,6 @@ public class AuthenticationFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) resp;
         
         String login, token, basicToken;
-        UserAccount userAccount = null;
         if(checkEndpoint(request.getServletPath(), request.getMethod())) {
             try {
                 token = request.getHeader("X-Token"); // JWT
@@ -52,7 +52,7 @@ public class AuthenticationFilter implements Filter {
                     // basic auth
                     String[] credentials = validationService.getCredentialsFromBase64(basicToken);
                     login = credentials[0]; //userAccount.getEmail()
-                    userAccount = repository.findById(login).orElse(null);
+                    UserAccount userAccount = repository.findById(login).orElse(null);
                     if(userAccount==null) {
                         response.sendError(404, "User not found!"); // may be 401? (to hide email availability information) anyway it shows 401 o_O
                         return;
@@ -74,19 +74,14 @@ public class AuthenticationFilter implements Filter {
                     }
                 }
                 request = new WrapperRequest(request, login);
-            } catch (HttpClientErrorException e) {
+            } catch (HttpClientErrorException | HttpServerErrorException e) {
                 e.printStackTrace();
-                response.sendError(403, "X-Token expired");
+                response.sendError(403, "X-Token not valid");
                 return;
             } catch (UserNotFoundException e) {
                 response.sendError(404, e.getMessage());
                 return;
-                
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendError(400, "auth");
-                return;
-            }
+            } 
         }
         chain.doFilter(request, response);
     }
@@ -108,12 +103,10 @@ public class AuthenticationFilter implements Filter {
 
     private class WrapperRequest extends HttpServletRequestWrapper {
         String user;
-
         public WrapperRequest(HttpServletRequest request, String user) {
             super(request);
             this.user = user;
         }
-
         @Override
         public Principal getUserPrincipal() {
             return new Principal() {

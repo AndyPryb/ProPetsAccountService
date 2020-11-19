@@ -51,7 +51,7 @@ public class UserValidationFilter implements Filter {
                     return;
                 }
             } catch (HttpClientErrorException e) {
-                response.sendError(403, "X-Token expired!");; // token expired
+                response.sendError(403, "X-Token expired!"); // token expired
                 return;
             } catch (Exception e) {
                 response.sendError(400, "validation"); // sth wrong

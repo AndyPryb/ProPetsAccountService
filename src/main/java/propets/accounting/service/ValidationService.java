@@ -1,19 +1,23 @@
 package propets.accounting.service;
 
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import propets.accounting.dto.UserInfoDto;
+import propets.accounting.dto.exceptions.TokenExpiredException;
 import propets.accounting.model.UserAccount;
 
 @Service
@@ -33,26 +37,21 @@ public class ValidationService {
     
     public String createToken(UserAccount userAccount) {
         try {
-            
+            List<String> list = new ArrayList<String>();
+            list.stream().map(a -> getCredentialsFromBase64(userAccount.getEmail())).collect(Collectors.toList());
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-login", userAccount.getEmail());
 //            String login = userAccount.getEmail();
-//            RequestEntity<String> requestEntity = new RequestEntity<String>(login, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
-            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
+            UserInfoDto userInfoDto = new UserInfoDto(userAccount.getEmail(), userAccount.getName(), userAccount.getAvatar(), null);
+            RequestEntity<UserInfoDto> requestEntity = new RequestEntity<>(userInfoDto, HttpMethod.POST, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
+//            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
             System.out.println(responseEntity.getBody().getEmail());
+//            return responseEntity.getBody().getToken();
             return responseEntity.getHeaders().get("X-Token").get(0);
-            
-            
-            
-//            UserDto userDto = modelMapper.map(userAccount, UserDto.class);
-//            System.out.println(userDto.toString());
-//            RequestEntity<UserDto> requestEntity = new RequestEntity<UserDto>(userDto, HttpMethod.GET, new URI("http://localhost:9000/createToken"));
-//            ResponseEntity<String> responseEntity = restTemplate.exchange(requestEntity, String.class);
-//            return responseEntity.getBody();
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("token creation failed");
             return null;
         }
     }
@@ -62,13 +61,16 @@ public class ValidationService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Token", token);
-            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/token"));
+            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.POST, new URI("https://propets-validation-bruma.herokuapp.com/token"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
+            if(responseEntity.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
+                throw new TokenExpiredException();
+            }
             UserInfoDto userInfoDto = responseEntity.getBody();
             return userInfoDto;
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.out.println("token validation failed");
             return null;
         }
         

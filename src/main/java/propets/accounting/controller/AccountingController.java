@@ -32,6 +32,7 @@ public class AccountingController {
     @PostMapping("/registration")
     public ResponseEntity<UserDto> registerUser(@RequestBody RegisterUserDto registerUserDto) {
         return service.registerUser(registerUserDto);
+        
     }
 
     @PostMapping("/login")
