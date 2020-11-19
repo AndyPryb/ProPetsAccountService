@@ -42,7 +42,7 @@ public class ValidationService {
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-login", userAccount.getEmail());
 //            String login = userAccount.getEmail();
-            UserInfoDto userInfoDto = new UserInfoDto(userAccount.getEmail(), userAccount.getName(), userAccount.getAvatar(), null);
+            UserInfoDto userInfoDto = new UserInfoDto(userAccount.getEmail(), userAccount.getName(), userAccount.getAvatar(), null, userAccount.getRoles());
             RequestEntity<UserInfoDto> requestEntity = new RequestEntity<>(userInfoDto, HttpMethod.POST, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
 //            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);

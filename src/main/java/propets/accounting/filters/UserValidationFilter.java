@@ -57,8 +57,11 @@ public class UserValidationFilter implements Filter {
                String pathLogin = request.getServletPath().split("/")[4];
                 
                 if(!request.getUserPrincipal().getName().equalsIgnoreCase(pathLogin)) {
-                    response.sendError(401, "User validation failed! Email "+userInfoDto.getEmail()+" does not match!");
-                    return;
+                	if (!isAdmin(userInfoDto)) {
+                        response.sendError(401, "User validation failed! Email "+userInfoDto.getEmail()+" does not match!");
+                        return;
+                	}
+                	
                 }
             } catch (HttpClientErrorException e) {
                 response.sendError(403, "X-Token expired!"); // token expired
@@ -73,7 +76,11 @@ public class UserValidationFilter implements Filter {
         chain.doFilter(request, response);
     }
 
-    private boolean checkEndpoint(String path, String method) { // edit and remove user
+    private boolean isAdmin(UserInfoDto userInfoDto) {
+		return userInfoDto.getRoles().contains("ADMIN");
+	}
+
+	private boolean checkEndpoint(String path, String method) { // edit and remove user
         boolean res = path.matches(PREFIX+"/.+/?") && "PUT".equalsIgnoreCase(method);
         res = res || path.matches(PREFIX+"/.+/?") && "DELETE".equalsIgnoreCase(method);
         

@@ -1,5 +1,7 @@
 package propets.accounting.dto;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,4 +17,5 @@ public class UserInfoDto {
     String avatar;
     //@JsonIgnore
     String token;
+    Set<String> roles;
 }
