@@ -1,6 +1,7 @@
 package propets.accounting.filters;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,6 +16,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.HandlerMapping;
 
 import propets.accounting.dto.UserInfoDto;
 import propets.accounting.service.ValidationService;
@@ -46,7 +48,15 @@ public class UserValidationFilter implements Filter {
                 System.out.println("Userinfodto email: "+userInfoDto.getEmail());
                 System.out.println(request.getServletPath().matches(".*/"+userInfoDto.getEmail()+"/?")); 
                 
-                if(!request.getUserPrincipal().getName().equalsIgnoreCase(userInfoDto.getEmail())) {
+//                Map pathVariables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);  
+//                String login = (String)pathVariables.get("userLogin");
+//                if (login == null) {
+//                	login = (String)pathVariables.get("userLogin");
+//                }
+                
+               String pathLogin = request.getServletPath().split("/")[4];
+                
+                if(!request.getUserPrincipal().getName().equalsIgnoreCase(pathLogin)) {
                     response.sendError(401, "User validation failed! Email "+userInfoDto.getEmail()+" does not match!");
                     return;
                 }
@@ -74,5 +84,16 @@ public class UserValidationFilter implements Filter {
         
         return res;
     }
+    
+//    private String getDataFromPath(String path) {
+//        if (path.matches(PREFIX + "/(.+)/?")) {
+//            String login = path.substring(PREFIX.length() + 1, path.length());
+//            if (login.matches(".*/")) {
+//                login = login.substring(0, login.length() - 1);
+//            }
+//            return login;
+//        }
+//        return null;
+//    }
     
 }
