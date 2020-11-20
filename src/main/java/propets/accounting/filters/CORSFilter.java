@@ -11,8 +11,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-@Service
-@Order(5)
+//@Service
+//@Order(5)
 public class CORSFilter extends OncePerRequestFilter {
 
     @Override
