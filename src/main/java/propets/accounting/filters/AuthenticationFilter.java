@@ -69,7 +69,7 @@ public class AuthenticationFilter implements Filter {
                         login = userInfoDto.getEmail();
                         response.setHeader("X-Token", userInfoDto.getToken());
                     } else {
-                        response.sendError(403, "token missing");
+                        response.sendError(403, "token is missing");
                         return;
                     }
                 }
