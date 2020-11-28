@@ -43,7 +43,7 @@ public class ValidationService {
             headers.add("X-login", userAccount.getEmail());
 //            String login = userAccount.getEmail();
             UserInfoDto userInfoDto = new UserInfoDto(userAccount.getEmail(), userAccount.getName(), userAccount.getAvatar(), null, userAccount.getRoles());
-            RequestEntity<UserInfoDto> requestEntity = new RequestEntity<>(userInfoDto, HttpMethod.POST, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
+            RequestEntity<UserInfoDto> requestEntity = new RequestEntity<>(userInfoDto, HttpMethod.POST, new URI("https://propets-validation-andy.herokuapp.com/createToken"));
 //            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.GET, new URI("https://propets-validation-bruma.herokuapp.com/createToken"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
             System.out.println(responseEntity.getBody().getEmail());
@@ -61,7 +61,7 @@ public class ValidationService {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Token", token);
-            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.POST, new URI("https://propets-validation-bruma.herokuapp.com/token"));
+            RequestEntity<String> requestEntity = new RequestEntity<String>(headers, HttpMethod.POST, new URI("https://propets-validation-andy.herokuapp.com/token"));
             ResponseEntity<UserInfoDto> responseEntity = restTemplate.exchange(requestEntity, UserInfoDto.class);
             if(responseEntity.getStatusCode().equals(HttpStatus.FORBIDDEN)) {
                 throw new TokenExpiredException();
