@@ -1,7 +1,6 @@
 package propets.accounting.filters;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -16,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.HandlerMapping;
 
 import propets.accounting.dto.UserInfoDto;
 import propets.accounting.service.ValidationService;
