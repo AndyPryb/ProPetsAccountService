@@ -1,6 +1,7 @@
 package propets.accounting.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Singular;
 import lombok.ToString;
@@ -49,9 +51,12 @@ public class UserAccount implements Serializable{
     
     
     public UserAccount() {
+    	this.activities = new ArrayList<>();
+    	this.favorites = new ArrayList<>();
     }
     
     public UserAccount(String name, String email) {
+    	this();
         this.name = name;
         this.email = email;
         roles.add("USER");
